@@ -43,7 +43,7 @@ const CreateSubscription = () => {
         const cardElement = elements.getElement(CardElement);
         
         const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type:'card', card: cardElement,
+            type:'card', card: cardElement, //billing_details: billingDetails
         });
 
 
@@ -57,8 +57,11 @@ const CreateSubscription = () => {
             const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
                 amount: 100
             });
- 
             console.log('[Client Secret]', clientSecret);
+
+            const confirmCardPayment = await stripe.confirmCardPayment(clientSecret, {payment_method: paymentMethod.id })
+
+            console.log('[Payment Confirmation]', confirmCardPayment);
         }
     };
 
