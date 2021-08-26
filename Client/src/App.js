@@ -4,10 +4,10 @@ import { Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 
 
-const dotenv = require('dotenv')
-dotenv.config();
+// .env
+require('dotenv').config();
 
-
+//stripe
 const stripePromise = loadStripe('pk_test_51JRZiRH9H3bUbp4v4rMxaEvcZTBtYY6VJECNDlJHErMviJO4Ooacgs4mr4SviOyWfcGTEn8ltTQVkUQSnaO0Iv0800x4iZH86h')
 
 function App() {

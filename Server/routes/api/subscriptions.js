@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 // Load Subscription model
 const Subscription = require('../../models/Subscription');
 
@@ -8,6 +9,8 @@ const Subscription = require('../../models/Subscription');
 // @description tests subscription route
 // @access Public
 router.get('/test', (req, res) => res.send('subscription route testing!'));
+
+
 
 // @route GET api/subscriptions
 // @description Get all subscriptions
@@ -55,5 +58,8 @@ router.delete('/:id', (req, res) => {
     .then(subscription => res.json({ mgs: 'Subscription entry deleted successfully' }))
     .catch(err => res.status(404).json({ error: 'No such a subscription' }));
 });
+
+
+
 
 module.exports = router;

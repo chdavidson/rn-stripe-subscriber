@@ -2,7 +2,7 @@ import React,{useState} from 'react'
 import axios from 'axios'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
-const CreateSubscription2 = () => {
+const CreateSubscription = () => {
 
     const stripe = useStripe();
     const elements = useElements();
@@ -18,12 +18,27 @@ const CreateSubscription2 = () => {
                                                 gift_aid: false
                                             }});
 
+    const [subscription, setSubscription] = useState({amount: 100})
+
     const handlePayment = async (event) => {
         event.preventDefault();
 
         if(!stripe || !elements){
             return;
         }
+
+        // store billingDetails into an objec here?
+        const billingDetails = {
+            name: "",
+            email: "",
+            adress:{
+                city:"",
+                line1:"",
+                state:"",
+                postal_code:"",
+            },
+        }
+
 
         const cardElement = elements.getElement(CardElement);
         
@@ -33,12 +48,20 @@ const CreateSubscription2 = () => {
 
 
         if(error){
-            console.log("[PAYMENT ERROR]", error);
+            console.log("[Payment Method Error]", error);
         }else{
             postSubscriber();
             console.log("[PaymentMethod]", paymentMethod);
+
+            console.log("Retrieving Client Secret...")
+            const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
+                amount: 100
+            });
+ 
+            console.log('[Client Secret]', clientSecret);
         }
     };
+
 
     const postSubscriber = () => {
         axios
@@ -55,7 +78,7 @@ const CreateSubscription2 = () => {
                                 gift_aid: false
                             }});
         })
-        .catch(err => { console.log('[ERROR IN SUBSCRIBER POST]', err);     })
+        .catch(err => { console.log('[Error in posting subscriber]', err);     })
     }
 
     const handleChange = event => {
@@ -72,7 +95,6 @@ const CreateSubscription2 = () => {
             }
         }
         setSubscriber(tempSub);
-        // console.log(subscriber);
     }
 
 
@@ -108,4 +130,4 @@ const CreateSubscription2 = () => {
     )
 }
 
-export default CreateSubscription2
+export default CreateSubscription
