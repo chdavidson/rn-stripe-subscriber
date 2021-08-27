@@ -35,24 +35,10 @@ const CreateSubscription = () => {
             return;
         }
 
-        // store billingDetails into an objec here?
-        // maybe just structre the state object to have a billing deails attribute and then pass that to the createPaymentMethod func
-        const billingDetails = {
-            name: "",
-            email: "",
-            adress:{
-                city:"",
-                line1:"",
-                state:"",
-                postal_code:"",
-            },
-        }
-
-
         const cardElement = elements.getElement(CardElement);
         
         const {error, paymentMethod} = await stripe.createPaymentMethod({
-            type:'card', card: cardElement, //billing_details: billingDetails
+            type:'card', card: cardElement, billing_details: subscriber['user']['billing_details']
         });
 
 
@@ -72,6 +58,48 @@ const CreateSubscription = () => {
             console.log('[Payment Confirmation]', confirmCardPayment);
         }
     };
+
+    const handleSubscription = async (event) => {
+        if(!stripe || !elements){
+            return;
+        }
+
+        const result = await stripe.createPaymentMethod({
+            type: 'card',
+            card: elements.getElement(CardElement),
+            billing_details: subscriber['user']['billing_details'],
+        });
+
+        if(result.error){
+            console.log('[Payment Method Error]', result.error.message)
+        }else{
+
+            const res = await axios.post('http://localhost:8082/api/sub', { 'payment_method': result.paymentMethod.id, 'email': subscriber['user']['billing_details']['email']});
+
+            console.log(res.data);
+            const { client_secret, status} = res.data;
+
+            if(status === 'requires_action'){
+                stripe.confirmCardPayment(client_secret)
+                    .then(() => {
+                        if(result.error){
+                            // Display error message in UI
+                            console.log('[Handle Subscription Error]', result.error);
+                        } else{
+                            // Display success message in UI
+                            console.log('Subscription Successful')
+                        }
+                    });
+            }
+            else{
+                // No additional information required
+                // Display success message
+                console.log('Subscription Successful')
+            }
+        }
+        
+
+    }
 
 
     const postSubscriber = () => {
@@ -150,7 +178,7 @@ const CreateSubscription = () => {
                     <input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/>
                     <input type='number' placeholder='0.0' name='amount' onChange={handleChange}/>
                     <input type='text' placeholder='freq' name='frequency' onChange={handleChange}/>
-                    <label for='gift_aid'>Gift Aid? </label>
+                    <label htmlFor='gift_aid'>Gift Aid? </label>
                     <input type='checkbox' name='gift_aid' onChange={handleChange}/>
                 <CardElement
                     options={{
@@ -170,6 +198,7 @@ const CreateSubscription = () => {
                     }}/>
                     <button type='submit' disabled={!stripe}>Pay</button>
                 </form>
+                <button onClick={handleSubscription}>TEST SUB</button>
         </div>
     )
 }
