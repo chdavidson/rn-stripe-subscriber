@@ -74,27 +74,30 @@ const CreateSubscription = () => {
             console.log('[Payment Method Error]', result.error.message)
         }else{
 
+            postSubscriber();
+
             const res = await axios.post('http://localhost:8082/api/sub', { 'payment_method': result.paymentMethod.id, 'email': subscriber['user']['billing_details']['email']});
 
-            console.log(res.data);
+            console.log('[RES:]', res);
             const { client_secret, status} = res.data;
 
+            console.log('[STATUS]', status)
             if(status === 'requires_action'){
                 stripe.confirmCardPayment(client_secret)
-                    .then(() => {
+                    .then((result) => {
                         if(result.error){
                             // Display error message in UI
                             console.log('[Handle Subscription Error]', result.error);
                         } else{
                             // Display success message in UI
-                            console.log('Subscription Successful')
+                            console.log('User Subscription Successful')
                         }
                     });
             }
             else{
                 // No additional information required
                 // Display success message
-                console.log('Subscription Successful')
+                console.log('User Subscription Successful')
             }
         }
         
@@ -146,7 +149,7 @@ const CreateSubscription = () => {
         }
 
         setSubscriber(tempSub);
-        console.log("[Subscriber in State]", subscriber)
+        // console.log("[Subscriber in State]", subscriber)
 
 
 
