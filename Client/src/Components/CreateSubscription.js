@@ -7,10 +7,18 @@ const CreateSubscription = () => {
     const stripe = useStripe();
     const elements = useElements();
 
-    const [subscriber, setSubscriber] = useState({user: {
-                                                firstName: "",
-                                                lastName: "",
-                                                facebook_id: ""
+    const [subscriber, setSubscriber] = useState({
+                                            user: {
+                                                facebook_id: "",
+                                                billing_details:{
+                                                    name: "",
+                                                    email: "",
+                                                    address:{
+                                                        city:"",
+                                                        line1:"",
+                                                        state:"",
+                                                        postal_code:"",
+                                                    }}
                                             },
                                             subscription: {
                                                 amount: 0,
@@ -28,6 +36,7 @@ const CreateSubscription = () => {
         }
 
         // store billingDetails into an objec here?
+        // maybe just structre the state object to have a billing deails attribute and then pass that to the createPaymentMethod func
         const billingDetails = {
             name: "",
             email: "",
@@ -60,7 +69,6 @@ const CreateSubscription = () => {
             console.log('[Client Secret]', clientSecret);
 
             const confirmCardPayment = await stripe.confirmCardPayment(clientSecret, {payment_method: paymentMethod.id })
-
             console.log('[Payment Confirmation]', confirmCardPayment);
         }
     };
@@ -86,27 +94,60 @@ const CreateSubscription = () => {
 
     const handleChange = event => {
         let tempSub = subscriber;
-        if(tempSub['user'].hasOwnProperty(event.target.name)){
-            tempSub['user'][event.target.name]=event.target.value;
+
+        if(event.target.value === 'on'){
+            tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid'];
         }
         else{
-            if(event.target.value === 'on'){
-                tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid']
-            }
-            else{
+            if(tempSub['subscription'].hasOwnProperty(event.target.name)){
                 tempSub['subscription'][event.target.name] = event.target.value;
             }
+            else{
+                if(tempSub['user']['billing_details'].hasOwnProperty(event.target.name)){
+                    tempSub['user']['billing_details'][event.target.name] = event.target.value;
+                }
+                else{
+                    if(tempSub['user']['billing_details']['address'].hasOwnProperty(event.target.name)){
+                        tempSub['user']['billing_details']['address'][event.target.name] = event.target.value;
+                    }
+                    else{
+                        tempSub['user'][event.target.name] = event.target.value;
+                    }
+                }
+            }
         }
+
         setSubscriber(tempSub);
+        console.log("[Subscriber in State]", subscriber)
+
+
+
+        // let tempSub = subscriber;
+        // if(tempSub['user'].hasOwnProperty(event.target.name)){
+        //     tempSub['user'][event.target.name]=event.target.value;
+        // }
+        // else{
+        //     if(event.target.value === 'on'){
+        //         tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid']
+        //     }
+        //     else{
+        //         tempSub['subscription'][event.target.name] = event.target.value;
+        //     }
+        // }
+        // setSubscriber(tempSub);
     }
 
 
     return (
         <div>
             <form onSubmit={handlePayment}>
-                    <input type='text' placeholder='first name' name='firstName' onChange={handleChange}/>
-                    <input type='text' placeholder='surname' name='lastName' onChange={handleChange}/>
                     <input type='text' placeholder='fb id' name='facebook_id' onChange={handleChange}/>
+                    <input type='text' placeholder='Full Name' name='name' onChange={handleChange}/>
+                    <input type='text' placeholder='Email' name='email' onChange={handleChange}/>
+                    <input type='text' placeholder='City' name='city' onChange={handleChange}/>
+                    <input type='text' placeholder='Address' name='line1' onChange={handleChange}/>
+                    <input type='text' placeholder='State/County' name='state' onChange={handleChange}/>
+                    <input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/>
                     <input type='number' placeholder='0.0' name='amount' onChange={handleChange}/>
                     <input type='text' placeholder='freq' name='frequency' onChange={handleChange}/>
                     <label for='gift_aid'>Gift Aid? </label>

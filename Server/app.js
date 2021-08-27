@@ -27,12 +27,13 @@ app.get('/api/payment-intent', (req, res) => res.send('payment-intent route test
 app.post('/api/create-payment-intent', async (req, res) => {
   
   try{
+      console.log(req.body)
       const { amount } = req.body;
       // Create PaymentIntent with thr order amount and currency
       const paymentIntent = await stripe.paymentIntents.create({
         // calculate the amount on the server side to avoid manipulation
-        amount: 1000,
-        currency: "usd"
+        amount: amount,
+        currency: "gdp"
       });
       res.status(200).send(paymentIntent.client_secret);
   }
