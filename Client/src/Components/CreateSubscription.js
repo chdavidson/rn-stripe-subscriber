@@ -86,17 +86,13 @@ const CreateSubscription = () => {
                 stripe.confirmCardPayment(client_secret)
                     .then((result) => {
                         if(result.error){
-                            // Display error message in UI
                             console.log('[Handle Subscription Error]', result.error);
                         } else{
-                            // Display success message in UI
                             console.log('User Subscription Successful')
                         }
                     });
             }
             else{
-                // No additional information required
-                // Display success message
                 console.log('User Subscription Successful')
             }
         }
@@ -149,40 +145,25 @@ const CreateSubscription = () => {
         }
 
         setSubscriber(tempSub);
-        // console.log("[Subscriber in State]", subscriber)
-
-
-
-        // let tempSub = subscriber;
-        // if(tempSub['user'].hasOwnProperty(event.target.name)){
-        //     tempSub['user'][event.target.name]=event.target.value;
-        // }
-        // else{
-        //     if(event.target.value === 'on'){
-        //         tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid']
-        //     }
-        //     else{
-        //         tempSub['subscription'][event.target.name] = event.target.value;
-        //     }
-        // }
-        // setSubscriber(tempSub);
     }
 
 
     return (
-        <div>
-            <form onSubmit={handlePayment}>
-                    <input type='text' placeholder='fb id' name='facebook_id' onChange={handleChange}/>
-                    <input type='text' placeholder='Full Name' name='name' onChange={handleChange}/>
-                    <input type='text' placeholder='Email' name='email' onChange={handleChange}/>
-                    <input type='text' placeholder='City' name='city' onChange={handleChange}/>
-                    <input type='text' placeholder='Address' name='line1' onChange={handleChange}/>
-                    <input type='text' placeholder='State/County' name='state' onChange={handleChange}/>
-                    <input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/>
-                    <input type='number' placeholder='0.0' name='amount' onChange={handleChange}/>
-                    <input type='text' placeholder='freq' name='frequency' onChange={handleChange}/>
-                    <label htmlFor='gift_aid'>Gift Aid? </label>
-                    <input type='checkbox' name='gift_aid' onChange={handleChange}/>
+        <div className="subscription-container">
+            <form className='subscription-form' onSubmit={handlePayment}>
+                <ul className="subscriber-details">
+                    <li><input type='text' placeholder='fb id' name='facebook_id' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='Full Name' name='name' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='Email' name='email' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='City' name='city' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='Address' name='line1' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='State/County' name='state' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/></li>
+                    <li><input type='number' placeholder='0.0' name='amount' onChange={handleChange}/></li>
+                    <li><input type='text' placeholder='freq' name='frequency' onChange={handleChange}/></li>
+                    <li><label htmlFor='gift_aid'>Gift Aid? </label></li>
+                    <li><input type='checkbox' name='gift_aid' onChange={handleChange}/></li>
+                </ul>
                 <CardElement
                     options={{
                         style:{
@@ -190,7 +171,7 @@ const CreateSubscription = () => {
                                 fontSize: '16px',
                                 color: 'dodgerblue',
                                 '::placeholder':{
-                                    color: 'dodgerblue',
+                                    color: 'white',
                                 },
                             },
                             invalid:{
