@@ -185,7 +185,7 @@ const CreateSubscription = () => {
                                 fontSize: '16px',
                                 color: 'dodgerblue',
                                 '::placeholder':{
-                                    color: 'dodgerblue',
+                                    color: 'white',
                                 },
                             },
                             invalid:{
