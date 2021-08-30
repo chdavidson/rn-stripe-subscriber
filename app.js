@@ -45,7 +45,7 @@ app.get('/api/transactions/', async (req, res) => {
 });
 
 app.post('/api/sub', async (req, res) => {
-    const {email, payment_method} = req.body;
+    const {email, payment_method, item} = req.body;
 
     const customer = await stripe.customers.create({
       payment_method: payment_method,
@@ -57,7 +57,7 @@ app.post('/api/sub', async (req, res) => {
 
     const subscription = await stripe.subscriptions.create({
         customer: customer.id,
-        items: [{ price: 'price_1JT1tPH9H3bUbp4vTswRMwvx'}],
+        items: [{ price: item }],
         expand: ['latest_invoice.payment_intent']
     });
 

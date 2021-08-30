@@ -15,8 +15,7 @@ const SubscriptionSchema = new mongoose.Schema({
         }
     },
     subscription:{
-        amount: { type: Number, required: true },
-        frequency: { type: String, required: true },
+        stripe_product: {type: String, required: true},
         gift_aid: Boolean
     }
 });

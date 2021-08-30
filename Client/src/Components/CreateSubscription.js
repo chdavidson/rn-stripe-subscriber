@@ -1,32 +1,12 @@
-import React,{useState} from 'react'
+import React from 'react'
 import axios from 'axios'
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
-const CreateSubscription = () => {
+const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
 
     const stripe = useStripe();
     const elements = useElements();
 
-    const [subscriber, setSubscriber] = useState({
-                                            user: {
-                                                facebook_id: "",
-                                                billing_details:{
-                                                    name: "",
-                                                    email: "",
-                                                    address:{
-                                                        city:"",
-                                                        line1:"",
-                                                        state:"",
-                                                        postal_code:"",
-                                                    }}
-                                            },
-                                            subscription: {
-                                                amount: 0,
-                                                frequency: null,
-                                                gift_aid: false
-                                            }});
-
-    const [subscription, setSubscription] = useState({amount: 100})
 
     const handlePayment = async (event) => {
         event.preventDefault();
@@ -79,7 +59,12 @@ const CreateSubscription = () => {
 
             postSubscriber();
 
-            const res = await axios.post('http://localhost:8082/api/sub', { 'payment_method': result.paymentMethod.id, 'email': subscriber['user']['billing_details']['email']});
+            const res = await axios.post('http://localhost:8082/api/sub', {   
+                                                    'payment_method': result.paymentMethod.id, 
+                                                    'email': subscriber['user']['billing_details']['email'], 
+                                                    'item': 'price_1JT1tPH9H3bUbp4vTswRMwvx'});
+                                                    // set item from tier selector?
+
 
             console.log('[RES:]', res);
             const { client_secret, status} = res.data;
@@ -124,8 +109,7 @@ const CreateSubscription = () => {
                                     }}
                             },
                             subscription: {
-                                amount: 0,
-                                frequency: null,
+                                stripe_product: '',
                                 gift_aid: false
                             }
                         });
@@ -133,32 +117,6 @@ const CreateSubscription = () => {
         .catch(err => { console.log('[Error in posting subscriber]', err);     })
     }
 
-    const handleChange = event => {
-        let tempSub = subscriber;
-
-        if(event.target.value === 'on'){
-            tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid'];
-        }
-        else{
-            if(tempSub['subscription'].hasOwnProperty(event.target.name)){
-                tempSub['subscription'][event.target.name] = event.target.value;
-            }
-            else{
-                if(tempSub['user']['billing_details'].hasOwnProperty(event.target.name)){
-                    tempSub['user']['billing_details'][event.target.name] = event.target.value;
-                }
-                else{
-                    if(tempSub['user']['billing_details']['address'].hasOwnProperty(event.target.name)){
-                        tempSub['user']['billing_details']['address'][event.target.name] = event.target.value;
-                    }
-                    else{
-                        tempSub['user'][event.target.name] = event.target.value;
-                    }
-                }
-            }
-        }
-        setSubscriber(tempSub);
-    }
 
 
     return (
@@ -174,8 +132,6 @@ const CreateSubscription = () => {
                     <li><input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/></li>
                     <li><input type='number' placeholder='0.0' name='amount' onChange={handleChange}/></li>
                     <li><input type='text' placeholder='freq' name='frequency' onChange={handleChange}/></li>
-                    <li><label htmlFor='gift_aid'>Gift Aid? </label></li>
-                    <li><input type='checkbox' name='gift_aid' onChange={handleChange}/></li>
                 </ul>
                 <CardElement
                     options={{
