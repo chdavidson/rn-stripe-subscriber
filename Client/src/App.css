@@ -13,6 +13,7 @@
 }
 
 
+
 .subscription-container {
   background-color: #f7941e;
   display: flex;
@@ -30,4 +31,29 @@
 
 .subscriber-details{
   list-style: none;
+}
+
+.tier-list{
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.tier-selection-container{
+  display: flex;
+}
+
+.tier-item{
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.gift-aid-container{
+  display: flex;
+  padding-top: 20px;
+}
+
+.gift-aid-decalration{
+  font-size: 12px;
 }
