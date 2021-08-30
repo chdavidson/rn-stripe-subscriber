@@ -8,7 +8,8 @@ const dotenv = require('dotenv').config();
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 
-const routes = require('./routes/api/subscriptions')
+const routes = require('./routes/api/subscriptions');
+const { restart } = require('nodemon');
 
 const app = express();
 
@@ -35,6 +36,12 @@ app.post('/api/create-payment-intent', async (req, res) => {
   catch(err){
     res.status(500).json({ statusCode: 500, message: err.message});
   }
+});
+
+
+app.get('/api/transactions/', async (req, res) => {
+    const transactions = await fetch('https://api.stripe.com/v1/issuing/transactions')
+    res.status(200).send(transactions);
 });
 
 app.post('/api/sub', async (req, res) => {

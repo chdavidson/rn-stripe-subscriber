@@ -60,6 +60,9 @@ const CreateSubscription = () => {
     };
 
     const handleSubscription = async (event) => {
+        event.preventDefault();
+
+
         if(!stripe || !elements){
             return;
         }
@@ -87,7 +90,7 @@ const CreateSubscription = () => {
                     .then((result) => {
                         if(result.error){
                             // Display error message in UI
-                            console.log('[Handle Subscription Error]', result.error);
+                            console.log('[Payment Completion Error]', result.error.decline_code);
                         } else{
                             // Display success message in UI
                             console.log('User Subscription Successful')
@@ -101,6 +104,7 @@ const CreateSubscription = () => {
             }
         }
         
+        event.target.reset();
 
     }
 
@@ -109,16 +113,25 @@ const CreateSubscription = () => {
         axios
         .post('http://localhost:8082/api/subscriptions/', subscriber)
         .then(res => {
-            setSubscriber({ user: {
-                                firstName: "",
-                                lastName: "",
-                                facebook_id: ""
+            setSubscriber({
+                            user: {
+                                facebook_id: "",
+                                billing_details:{
+                                    name: "",
+                                    email: "",
+                                    address:{
+                                        city:"",
+                                        line1:"",
+                                        state:"",
+                                        postal_code:"",
+                                    }}
                             },
                             subscription: {
                                 amount: 0,
                                 frequency: null,
                                 gift_aid: false
-                            }});
+                            }
+                        });
         })
         .catch(err => { console.log('[Error in posting subscriber]', err);     })
     }
@@ -147,31 +160,13 @@ const CreateSubscription = () => {
                 }
             }
         }
-
         setSubscriber(tempSub);
-        // console.log("[Subscriber in State]", subscriber)
-
-
-
-        // let tempSub = subscriber;
-        // if(tempSub['user'].hasOwnProperty(event.target.name)){
-        //     tempSub['user'][event.target.name]=event.target.value;
-        // }
-        // else{
-        //     if(event.target.value === 'on'){
-        //         tempSub['subscription']['gift_aid']=!tempSub['subscription']['gift_aid']
-        //     }
-        //     else{
-        //         tempSub['subscription'][event.target.name] = event.target.value;
-        //     }
-        // }
-        // setSubscriber(tempSub);
     }
 
 
     return (
         <div>
-            <form onSubmit={handlePayment}>
+            <form onSubmit={handleSubscription}>
                     <input type='text' placeholder='fb id' name='facebook_id' onChange={handleChange}/>
                     <input type='text' placeholder='Full Name' name='name' onChange={handleChange}/>
                     <input type='text' placeholder='Email' name='email' onChange={handleChange}/>
@@ -201,7 +196,6 @@ const CreateSubscription = () => {
                     }}/>
                     <button type='submit' disabled={!stripe}>Pay</button>
                 </form>
-                <button onClick={handleSubscription}>TEST SUB</button>
         </div>
     )
 }
