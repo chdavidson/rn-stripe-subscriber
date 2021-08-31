@@ -62,8 +62,7 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
             const res = await axios.post('http://localhost:8082/api/sub', {   
                                                     'payment_method': result.paymentMethod.id, 
                                                     'email': subscriber['user']['billing_details']['email'], 
-                                                    'item': 'price_1JT1tPH9H3bUbp4vTswRMwvx'});
-                                                    // set item from tier selector?
+                                                    'item': subscriber['subscription']['stripe_product']});
 
 
             console.log('[RES:]', res);
@@ -130,8 +129,6 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
                     <li><input type='text' placeholder='Address' name='line1' onChange={handleChange}/></li>
                     <li><input type='text' placeholder='State/County' name='state' onChange={handleChange}/></li>
                     <li><input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/></li>
-                    <li><input type='number' placeholder='0.0' name='amount' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='freq' name='frequency' onChange={handleChange}/></li>
                 </ul>
                 <CardElement
                     options={{

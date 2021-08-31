@@ -1,4 +1,3 @@
-import { defaultMaxListeners } from 'events'
 import React from 'react'
 import { CONSTANTS } from '../CONSTANTS';
 

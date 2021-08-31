@@ -72,7 +72,7 @@ function App() {
       <div className="App">
         <img src={CONSTANTS.LOGO} alt="company logo here" width='100px' height='80ppx'/>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend diam eu eleifend dapibus. Donec sodales lacus non enim aliquet convallis. Aliquam tristique eleifend sagittis. Morbi sed mattis erat, sed mollis lectus. Nulla vel ullamcorper metus. Praesent ac lectus sed dui gravida accumsan. Donec sollicitudin quam vitae facilisis elementum. Morbi ac augue quis nisi tincidunt sollicitudin.</p>
-        <TierSelection  />
+        <TierSelection handleChange={handleChange} />
         <CreateSubscription handleChange={handleChange} subscriber={subscriber} setSubscriber={setSubscriber}/>
         <GiftAidOptIn amount={0} handleOptIn={handleChange}/>
       </div>
