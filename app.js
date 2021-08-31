@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 var cors = require('cors');
+const path = require('path');
 
 // .env
 const dotenv = require('dotenv').config();
@@ -14,6 +15,9 @@ const { restart } = require('nodemon');
 const app = express();
 
 connectDB();
+
+app.use(express.static('/Client',"client", "build"));
+
 app.use(cors({ origin: true, credentials: true }));
 
 app.use(express.json({ extended: false }));
@@ -71,5 +75,10 @@ app.post('/api/sub', async (req, res) => {
 app.use('/api/subscriptions', routes);
 
 const port = process.env.PORT || 8082;
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join('/client/public', "client", "build", "index.html"));
+});
+
 
 app.listen(port, () => console.log(`Server running on port ${port}`));
