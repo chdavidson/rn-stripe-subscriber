@@ -7,7 +7,7 @@
     "start": "node app.js",
     "app": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "heroku-postbuild": "npm install && cd Client && npm install && npm install && npm run build"
+    "heroku-postbuild": "cd Client && npm install && npm run build"
   },
   "author": "calumdavidson",
   "license": "ISC",
