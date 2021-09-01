@@ -3,20 +3,20 @@ const connectDB = require('./config/db');
 var cors = require('cors');
 const path = require('path');
 
-// .env
 const dotenv = require('dotenv').config();
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 
 const routes = require('./routes/api/subscriptions');
-const { restart } = require('nodemon');
+
+
 
 const app = express();
 
 connectDB();
 
-app.use(express.static('/Client',"client", "build"));
+app.use(express.static(path.join('/Client',"client", "build")));
 
 app.use(cors({ origin: true, credentials: true }));
 
