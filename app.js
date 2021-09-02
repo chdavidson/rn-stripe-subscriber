@@ -16,7 +16,6 @@ const app = express();
 
 connectDB();
 
-// app.use(express.static(path.join('/Client',"client", "build")));
 app.use(express.static(path.join(__dirname, 'Client/build')))
 
 app.use(cors({ origin: true, credentials: true }));
@@ -78,7 +77,6 @@ app.use('/api/subscriptions', routes);
 const port = process.env.PORT || 8082;
 
 app.get('*', (req, res) => {
-    // res.sendFile(path.join('/client/public', "client", "build", "index.html"));
     res.sendFile(path.join(__dirname+'/Client/build/index.html'))
 });
 

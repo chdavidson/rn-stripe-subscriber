@@ -29,7 +29,8 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
             console.log("[PaymentMethod]", paymentMethod);
 
             console.log("Retrieving Client Secret...")
-            const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
+            //const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
+            const { data : clientSecret } = await axios.post('https://social-mind-sponsor-checkout.herokuapp.com/api/create-payment-intent', {
                 amount: 100
             });
             console.log('[Client Secret]', clientSecret);
@@ -40,6 +41,9 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
     };
 
     const handleSubscription = async (event) => {
+
+        let completed = false;
+
         event.preventDefault();
 
 
@@ -59,7 +63,8 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
 
             postSubscriber();
 
-            const res = await axios.post('http://localhost:8082/api/sub', {   
+            //const res = await axios.post('http://localhost:8082/api/sub', {   
+            const res = await axios.post('https://social-mind-sponsor-checkout.herokuapp.com/api/sub',{
                                                     'payment_method': result.paymentMethod.id, 
                                                     'email': subscriber['user']['billing_details']['email'], 
                                                     'item': subscriber['subscription']['stripe_product']});
@@ -77,22 +82,27 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
                             console.log('[Payment Completion Error]', result.error.decline_code);
                         } else{
                             console.log('User Subscription Successful')
+                            completed = true;
                         }
                     });
             }
             else{
                 console.log('User Subscription Successful')
+                completed = true;
             }
         }
         
         event.target.reset();
+        if(completed){ console.log('completed!'); window.close(); }
+
 
     }
 
 
     const postSubscriber = () => {
         axios
-        .post('http://localhost:8082/api/subscriptions/', subscriber)
+        //.post('http://localhost:8082/api/subscriptions/', subscriber)
+        .post('https://social-mind-sponsor-checkout.herokuapp.com/api/subscriptions/', subscriber)
         .then(res => {
             setSubscriber({
                             user: {
