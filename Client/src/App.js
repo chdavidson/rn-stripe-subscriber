@@ -70,11 +70,32 @@ function App() {
   return (
     <Elements stripe={stripePromise}>
       <div className="App">
-        <img src={CONSTANTS.LOGO} alt="company logo here" width='100px' height='80ppx'/>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec eleifend diam eu eleifend dapibus. Donec sodales lacus non enim aliquet convallis. Aliquam tristique eleifend sagittis. Morbi sed mattis erat, sed mollis lectus. Nulla vel ullamcorper metus. Praesent ac lectus sed dui gravida accumsan. Donec sollicitudin quam vitae facilisis elementum. Morbi ac augue quis nisi tincidunt sollicitudin.</p>
-        <TierSelection handleChange={handleChange} />
-        <CreateSubscription handleChange={handleChange} subscriber={subscriber} setSubscriber={setSubscriber}/>
-        <GiftAidOptIn amount={0} handleOptIn={handleChange}/>
+        <div className="AppInner">
+
+          <div class="text-center m-v-2">
+            <img src={CONSTANTS.LOGO} alt="company logo here" width='180px'/>
+          </div>
+
+          <div class="text-center m-v-2">
+            <p>Thank you for donating to [CHARITY_NAME].</p> <p>Your support means we can be there for more people living with cancer.</p>
+          </div>
+
+          <div class="text-center m-v-2">
+            <TierSelection handleChange={handleChange} />
+          </div>
+          <div class="text-center m-v-2">
+           <div class="input-group prefix">                           
+        <span class="input-group-addon">£</span>
+          <input type='number' class="form-item" placeholder='Other amount' name='other' onChange={handleChange}/>
+      </div>
+          </div>
+          
+          <GiftAidOptIn amount={0} handleOptIn={handleChange}/>
+
+          <CreateSubscription handleChange={handleChange} subscriber={subscriber} setSubscriber={setSubscriber}/>
+
+        </div>
+
       </div>
     </Elements>
   );  

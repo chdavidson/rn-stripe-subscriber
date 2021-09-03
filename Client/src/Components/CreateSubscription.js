@@ -29,7 +29,8 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
             console.log("[PaymentMethod]", paymentMethod);
 
             console.log("Retrieving Client Secret...")
-            const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
+            //const { data: clientSecret } = await axios.post('http://localhost:8082/api/create-payment-intent', {
+            const { data : clientSecret } = await axios.post('https://social-mind-sponsor-checkout.herokuapp.com/api/create-payment-intent', {
                 amount: 100
             });
             console.log('[Client Secret]', clientSecret);
@@ -40,6 +41,9 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
     };
 
     const handleSubscription = async (event) => {
+
+        let completed = false;
+
         event.preventDefault();
 
 
@@ -59,7 +63,8 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
 
             postSubscriber();
 
-            const res = await axios.post('http://localhost:8082/api/sub', {   
+            //const res = await axios.post('http://localhost:8082/api/sub', {   
+            const res = await axios.post('https://social-mind-sponsor-checkout.herokuapp.com/api/sub',{
                                                     'payment_method': result.paymentMethod.id, 
                                                     'email': subscriber['user']['billing_details']['email'], 
                                                     'item': subscriber['subscription']['stripe_product']});
@@ -77,22 +82,27 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
                             console.log('[Payment Completion Error]', result.error.decline_code);
                         } else{
                             console.log('User Subscription Successful')
+                            completed = true;
                         }
                     });
             }
             else{
                 console.log('User Subscription Successful')
+                completed = true;
             }
         }
         
         event.target.reset();
+        if(completed){ console.log('completed!'); window.close(); }
+
 
     }
 
 
     const postSubscriber = () => {
         axios
-        .post('http://localhost:8082/api/subscriptions/', subscriber)
+        //.post('http://localhost:8082/api/subscriptions/', subscriber)
+        .post('https://social-mind-sponsor-checkout.herokuapp.com/api/subscriptions/', subscriber)
         .then(res => {
             setSubscriber({
                             user: {
@@ -122,32 +132,35 @@ const CreateSubscription = ({handleChange, subscriber, setSubscriber}) => {
         <div className="subscription-container">
             <form className='subscription-form' onSubmit={handleSubscription}>
                 <ul className="subscriber-details">
-                    <li><input type='text' placeholder='fb id' name='facebook_id' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='Full Name' name='name' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='Email' name='email' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='City' name='city' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='Address' name='line1' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='State/County' name='state' onChange={handleChange}/></li>
-                    <li><input type='text' placeholder='Postal Code' name='postal_code' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='fb id' name='facebook_id' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='Full Name' name='name' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='Email' name='email' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='City' name='city' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='Address' name='line1' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='State/County' name='state' onChange={handleChange}/></li>
+                    <li><input type='text' class="form-item" placeholder='Postal Code' name='postal_code' onChange={handleChange}/></li>
                 </ul>
-                <CardElement
-                    options={{
-                        style:{
-                            base:{
-                                fontSize: '16px',
-                                color: 'dodgerblue',
-                                '::placeholder':{
-                                    color: 'white',
+                <div class=" m-t-4">
+                    <CardElement
+                        options={{
+                            style:{
+                                base:{
+                                    fontSize: '16px',
+                                    color: 'dodgerblue',
+                                    '::placeholder':{
+                                        color: '#787878',
+                                    },
                                 },
+                                invalid:{
+                                    color: '#9e2146',
+                                }
                             },
-                            invalid:{
-                                color: '#9e2146',
-                            }
-                        },
-                        hidePostalCode: true
-                    }}/>
-                    <button type='submit' disabled={!stripe}>Pay</button>
-                </form>
+                            hidePostalCode: true
+                        }}/>
+                        <p><small>By pressing "Complete my donation" I confirm that the above details are correct and that I have read and agreed to the <a href="#" target="_blank">terms and coditions</a> and <a href="#" target="_blank">privacy policy</a></small></p>
+                        <button type='submit' class="pay-button button" disabled={!stripe}>Pay</button>
+                </div>
+            </form>
         </div>
     )
 }
