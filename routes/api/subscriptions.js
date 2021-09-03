@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 // Load Subscription model
-const Subscription = require('../../models/Subscription');
+const Subscription = require('../../Models/Subscription');
 
 // @route GET api/subsctiption/test
 // @description tests subscription route
